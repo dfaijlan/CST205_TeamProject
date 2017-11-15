@@ -51,26 +51,6 @@ class Window(QWidget):
         outer_h_layout_contain_inner.addLayout(inner_v_layout_song_info)
         outer_h_layout_contain_inner.addLayout(inner_v_layout_disp_image)
 
-
-
-
-        #inner hlayout
-        # self.rgb_label = QLabel()
-        # self.rgb_label.setText("RGB:")
-        # self.rgb_out_label = QLabel()
-        # self.hex_label = QLabel()
-        # self.hex_label.setText("Hex:")
-        # self.hex_out_label = QLabel()
-
-        # self.rgb_out_label.setText()
-        # self.rgb_out_label.setalignment()
-        # self.hex_out_label.setText()
-        # inner_h_layout = QHBoxLayout()
-        # inner_h_layout.addWidget(self.rgb_label)
-        # inner_h_layout.addWidget(self.rgb_out_label)
-        # inner_h_layout.addWidget(self.hex_label)
-        # inner_h_layout.addWidget(self.hex_out_label)
-
         #outer v layout
         outer_v_layout = QVBoxLayout()
         outer_v_layout.addLayout(outer_h_layout_contain_inner)
