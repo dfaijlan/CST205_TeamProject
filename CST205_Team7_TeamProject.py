@@ -33,9 +33,14 @@ class Window(QWidget):
         self.artist_name = QLabel()
 
         # Dislay image for the song if any
-        self.image = QLabel()
+        self.cover_image = QLabel()
 
 
+        # Buttons
+        self.play_button = QPushButton("Play")
+        self.pause_button = QPushButton("Pause")
+        self.rewind_button = QPushButton("Rewind")
+        self.forward_button = QPushButton("Forward")
 
 
 
@@ -44,17 +49,26 @@ class Window(QWidget):
         inner_v_layout_song_info.addWidget(self.artist_name)
         # inner_v_layout_song_info.addWidget(self.song_list)
         inner_v_layout_disp_image = QVBoxLayout()
-        inner_v_layout_disp_image.addWidget(self.image)
+        inner_v_layout_disp_image.addWidget(self.cover_image)
 
-
+        # layout for song info and image
         outer_h_layout_contain_inner = QHBoxLayout()
         outer_h_layout_contain_inner.addLayout(inner_v_layout_song_info)
         outer_h_layout_contain_inner.addLayout(inner_v_layout_disp_image)
+        # layout for Buttons
+        outer_h_layout_contain_buttons = QHBoxLayout()
+        outer_h_layout_contain_buttons.addWidget(self.rewind_button)
+        outer_h_layout_contain_buttons.addWidget(self.play_button)
+        outer_h_layout_contain_buttons.addWidget(self.pause_button)
+        outer_h_layout_contain_buttons.addWidget(self.forward_button)
+
+
 
         #outer v layout
         outer_v_layout = QVBoxLayout()
         outer_v_layout.addLayout(outer_h_layout_contain_inner)
         outer_v_layout.addWidget(self.song_list)
+        outer_v_layout.addLayout(outer_h_layout_contain_buttons)
         # outer_v_layout.addLayout(inner_h_layout)
         self.setLayout(outer_v_layout)
 
@@ -76,7 +90,7 @@ class Window(QWidget):
         self.artist_name.setText("Artist name here!!")
         pixmap = QPixmap('images/my_image.jpg')
         pixmap = pixmap.scaledToWidth(150)
-        self.image.setPixmap(pixmap)
+        self.cover_image.setPixmap(pixmap)
         # self.hex_out_label.setText(my_new_dict[my_text]["HEX"])
         # self.rgb_out_label.setText(my_new_dict[my_text]["RGB"])
 
