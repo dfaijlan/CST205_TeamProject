@@ -10,6 +10,11 @@ from PIL import Image
 from pygame import mixer
 
 my_new_dict = {
+    "Pick a song":{
+        "artist_name" : "",
+        "song_path" : "",
+        "img_path" : ""
+    },
     "Still Feelin It":{
         "artist_name" : "Mistah F.A.B.",
         "song_path":"songs/Still-Feelin-It_Mix.wav",
@@ -79,24 +84,23 @@ class Window(QWidget):
     @pyqtSlot()
     def update_ui(self):
         my_text = self.song_list.currentText()
-        self.song_name.setText(my_text)
-        self.artist_name.setText(my_new_dict[my_text]["artist_name"])
-        pixmap = QPixmap(my_new_dict[my_text]["img_path"])
-        pixmap = pixmap.scaledToWidth(150)
-        self.image.setPixmap(pixmap)
-        # self.hex_out_label.setText(my_new_dict[my_text]["HEX"])
-        # self.rgb_out_label.setText(my_new_dict[my_text]["RGB"])
-
-        # print(my_text)
-        pygame.mixer.init()
-        pygame.init()
-        pygame.mixer.music.load(my_new_dict[my_text]["song_path"])
-        pygame.mixer.music.set_endevent(pygame.USEREVENT)
-        pygame.event.set_allowed(pygame.USEREVENT)
-        pygame.mixer.music.play()
-        pygame.event.wait()
+        pygame.mixer.quit()
+        if (my_text != "") :
+            self.song_name.setText(my_text)
+            self.artist_name.setText(my_new_dict[my_text]["artist_name"])
+            pixmap = QPixmap(my_new_dict[my_text]["img_path"])
+            pixmap = pixmap.scaledToWidth(150)
+            self.image.setPixmap(pixmap)
+            pygame.mixer.init()
+            pygame.init()
+            pygame.mixer.music.load(my_new_dict[my_text]["song_path"])
+            pygame.mixer.music.set_endevent(pygame.USEREVENT)
+            pygame.event.set_allowed(pygame.USEREVENT)
+            pygame.mixer.music.play()
+            pygame.event.wait()
 
 app = QApplication(sys.argv)
 main = Window()
 main.show()
 sys.exit(app.exec_())
+pygame.mixer.quit()
