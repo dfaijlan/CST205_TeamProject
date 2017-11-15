@@ -27,8 +27,11 @@ class Window(QWidget):
         self.song_list = QComboBox()
         self.song_list.addItems(my_new_dict.keys())
         # add label to display current playing song name
-        self.main_label = QLabel()
-        self.main_label.setText("Select a song to Play!!!")
+        self.song_name = QLabel()
+        self.song_name.setText("Select a song to Play!!!")
+        # label to display artist name
+        self.artist_name = QLabel()
+
         # Dislay image for the song if any
         self.image = QLabel()
 
@@ -36,10 +39,20 @@ class Window(QWidget):
 
 
 
-        inner_v_layout = QVBoxLayout()
-        inner_v_layout.addWidget(self.main_label)
-        inner_v_layout.addWidget(self.song_list)
-        inner_v_layout.addWidget(self.image)
+        inner_v_layout_song_info = QVBoxLayout()
+        inner_v_layout_song_info.addWidget(self.song_name)
+        inner_v_layout_song_info.addWidget(self.artist_name)
+        # inner_v_layout_song_info.addWidget(self.song_list)
+        inner_v_layout_disp_image = QVBoxLayout()
+        inner_v_layout_disp_image.addWidget(self.image)
+
+
+        outer_h_layout_contain_inner = QHBoxLayout()
+        outer_h_layout_contain_inner.addLayout(inner_v_layout_song_info)
+        outer_h_layout_contain_inner.addLayout(inner_v_layout_disp_image)
+
+
+
 
         #inner hlayout
         # self.rgb_label = QLabel()
@@ -60,7 +73,8 @@ class Window(QWidget):
 
         #outer v layout
         outer_v_layout = QVBoxLayout()
-        outer_v_layout.addLayout(inner_v_layout)
+        outer_v_layout.addLayout(outer_h_layout_contain_inner)
+        outer_v_layout.addWidget(self.song_list)
         # outer_v_layout.addLayout(inner_h_layout)
         self.setLayout(outer_v_layout)
 
@@ -78,7 +92,8 @@ class Window(QWidget):
     @pyqtSlot()
     def update_ui(self):
         my_text = self.song_list.currentText()
-        self.main_label.setText(my_text)
+        self.song_name.setText("Song name here "+my_text)
+        self.artist_name.setText("Artist name here!!")
         pixmap = QPixmap('images/my_image.jpg')
         pixmap = pixmap.scaledToWidth(150)
         self.image.setPixmap(pixmap)
