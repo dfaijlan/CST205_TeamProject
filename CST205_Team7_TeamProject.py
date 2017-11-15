@@ -10,10 +10,16 @@ from PIL import Image
 from pygame import mixer
 
 my_new_dict = {
-"Still Feelin It":{"song_path":"songs/Still-Feelin-It_Mix.wav","img_path":"images/stf_img.jpg"},
-"Random":{"song_path":"songs/Track01.mp3","img_path":"images/my_img.jpg"},
-"Green":{"RGB":"(0,255,0)","HEX":"#00FF00"},
-"Vermilion":{"RGB":"(227,66,52)","HEX":"#e34234"}
+    "Still Feelin It":{
+        "artist_name" : "Mistah F.A.B.",
+        "song_path":"songs/Still-Feelin-It_Mix.wav",
+        "img_path":"images/stf_img.jpg"
+    },
+    "Random":{
+        "artist_name" : "Unknown",
+        "song_path":"songs/Track01.mp3",
+        "img_path":"images/my_img.jpg"
+    }
 }
 
 
@@ -28,8 +34,11 @@ class Window(QWidget):
         self.song_list = QComboBox()
         self.song_list.addItems(my_new_dict.keys())
         # add label to display current playing song name
-        self.main_label = QLabel()
-        self.main_label.setText("Select a song to Play!!!")
+        self.song_name = QLabel()
+        self.song_name.setText("Select a song to Play!!!")
+        # label to display artist name
+        self.artist_name = QLabel()
+
         # Dislay image for the song if any
         self.image = QLabel()
 
@@ -37,31 +46,22 @@ class Window(QWidget):
 
 
 
-        inner_v_layout = QVBoxLayout()
-        inner_v_layout.addWidget(self.main_label)
-        inner_v_layout.addWidget(self.song_list)
-        inner_v_layout.addWidget(self.image)
+        inner_v_layout_song_info = QVBoxLayout()
+        inner_v_layout_song_info.addWidget(self.song_name)
+        inner_v_layout_song_info.addWidget(self.artist_name)
+        # inner_v_layout_song_info.addWidget(self.song_list)
+        inner_v_layout_disp_image = QVBoxLayout()
+        inner_v_layout_disp_image.addWidget(self.image)
 
-        #inner hlayout
-        # self.rgb_label = QLabel()
-        # self.rgb_label.setText("RGB:")
-        # self.rgb_out_label = QLabel()
-        # self.hex_label = QLabel()
-        # self.hex_label.setText("Hex:")
-        # self.hex_out_label = QLabel()
 
-        # self.rgb_out_label.setText()
-        # self.rgb_out_label.setalignment()
-        # self.hex_out_label.setText()
-        # inner_h_layout = QHBoxLayout()
-        # inner_h_layout.addWidget(self.rgb_label)
-        # inner_h_layout.addWidget(self.rgb_out_label)
-        # inner_h_layout.addWidget(self.hex_label)
-        # inner_h_layout.addWidget(self.hex_out_label)
+        outer_h_layout_contain_inner = QHBoxLayout()
+        outer_h_layout_contain_inner.addLayout(inner_v_layout_song_info)
+        outer_h_layout_contain_inner.addLayout(inner_v_layout_disp_image)
 
         #outer v layout
         outer_v_layout = QVBoxLayout()
-        outer_v_layout.addLayout(inner_v_layout)
+        outer_v_layout.addLayout(outer_h_layout_contain_inner)
+        outer_v_layout.addWidget(self.song_list)
         # outer_v_layout.addLayout(inner_h_layout)
         self.setLayout(outer_v_layout)
 
@@ -79,7 +79,8 @@ class Window(QWidget):
     @pyqtSlot()
     def update_ui(self):
         my_text = self.song_list.currentText()
-        self.main_label.setText(my_text)
+        self.song_name.setText(my_text)
+        self.artist_name.setText(my_new_dict[my_text]["artist_name"])
         pixmap = QPixmap(my_new_dict[my_text]["img_path"])
         pixmap = pixmap.scaledToWidth(150)
         self.image.setPixmap(pixmap)
