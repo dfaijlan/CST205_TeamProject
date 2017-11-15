@@ -1,16 +1,17 @@
 
 import sys
 import random
+import pygame
 from PyQt5.QtWidgets import (QApplication, QWidget, QLabel, QPushButton,
                                 QLineEdit, QHBoxLayout, QVBoxLayout, QComboBox)
 from PyQt5.QtCore import pyqtSlot
 from PyQt5.QtGui import (QPixmap, QImage, QIcon)
 from PIL import Image
-
+from pygame import mixer
 
 my_new_dict = {
-"Red":{"RGB":"(255,0,0)","HEX":"#FF0000"},
-"Blue":{"RGB":"(0,0,255)","HEX":"#0000FF"},
+"Still Feelin It":{"song_path":"songs/Still-Feelin-It_Mix.wav","img_path":"images/stf_img.jpg"},
+"Random":{"song_path":"songs/Track01.mp3","img_path":"images/my_img.jpg"},
 "Green":{"RGB":"(0,255,0)","HEX":"#00FF00"},
 "Vermilion":{"RGB":"(227,66,52)","HEX":"#e34234"}
 }
@@ -79,13 +80,20 @@ class Window(QWidget):
     def update_ui(self):
         my_text = self.song_list.currentText()
         self.main_label.setText(my_text)
-        pixmap = QPixmap('images/my_image.jpg')
+        pixmap = QPixmap(my_new_dict[my_text]["img_path"])
         pixmap = pixmap.scaledToWidth(150)
         self.image.setPixmap(pixmap)
         # self.hex_out_label.setText(my_new_dict[my_text]["HEX"])
         # self.rgb_out_label.setText(my_new_dict[my_text]["RGB"])
 
         # print(my_text)
+        pygame.mixer.init()
+        pygame.init()
+        pygame.mixer.music.load(my_new_dict[my_text]["song_path"])
+        pygame.mixer.music.set_endevent(pygame.USEREVENT)
+        pygame.event.set_allowed(pygame.USEREVENT)
+        pygame.mixer.music.play()
+        pygame.event.wait()
 
 app = QApplication(sys.argv)
 main = Window()
