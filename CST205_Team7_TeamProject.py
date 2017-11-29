@@ -1,15 +1,16 @@
 
 import sys
 import random
+from PIL import Image
 import pygame
+from pygame import mixer
 from PyQt5.QtWidgets import (QApplication, QWidget, QLabel, QPushButton,
                                 QSlider, QLineEdit, QHBoxLayout, QVBoxLayout,
-                                QComboBox, QGroupBox)
+                                QComboBox, QGroupBox, QRadioButton)
 from PyQt5.QtCore import (pyqtSlot, Qt)
 from PyQt5.QtGui import (QPixmap, QImage, QIcon)
-from PyQt5.QtMultimedia import QMediaPlayer
-from PIL import Image
-from pygame import mixer
+
+
 
 my_new_dict = {
     "Pick a song":{
@@ -40,36 +41,12 @@ class Window(QWidget):
         # add QComboBox for the song list
         self.song_list = QComboBox()
         self.song_list.addItems(my_new_dict.keys())
-        # add label to display current playing song name
-        self.song_name = QLabel()
-        self.song_name.setText("Select a song to Play!!!")
+        self.song_name = QLabel("Select a song to Play!!!")
+        # self.song_name.setText("Select a song to Play!!!")
         # label to display artist name
         self.artist_name = QLabel()
         # Dislay image for the song if any
         self.cover_image = QLabel()
-
-        #Volume Slider
-        self.vol_slider = QSlider()
-        self.vol_slider.setOrientation(Qt.Horizontal)
-        self.vol_slider.setRange(0,10)
-        self.vol_slider.setValue(5)
-        # self.vol_slider.setTickPosition(QSlider.TicksBelow)
-        # self.vol_slider.setTickInterval(5)
-        self.vol_slider.valueChanged.connect(self.vol_change)
-        # self.vol_slider.size(100,100)
-
-        #volume control
-        self.my_volume = QMediaPlayer()
-        # self.my_volume.setVolume(50)
-
-
-
-        # Music Image
-        self.music_image = QLabel()
-        music_pic = QPixmap("images/music.png")
-        music_pic = music_pic.scaledToWidth(150)
-        self.music_image.setPixmap(music_pic)
-
 
         inner_v_layout_song_info = QVBoxLayout()
         inner_v_layout_song_info.addWidget(self.song_name)
@@ -78,27 +55,59 @@ class Window(QWidget):
         inner_v_layout_disp_image = QVBoxLayout()
         inner_v_layout_disp_image.addWidget(self.cover_image)
 
+        # Music Image
+        self.music_image = QLabel()
+        music_pic = QPixmap("images/music.png")
+        music_pic = music_pic.scaledToWidth(150)
+        self.music_image.setPixmap(music_pic)
+
+        #Volume Controls
+        self.volume_label = QLabel("Volume: ")
+        self.vol_slider = QSlider()
+        self.vol_slider.setOrientation(Qt.Horizontal)
+        self.vol_slider.setRange(0,100)
+        self.vol_slider.setValue(5)
+        self.vol_slider.valueChanged.connect(self.vol_change)
+        self.mute_label = QLabel("Mute: ")
+        self.mute_button = QRadioButton()
+        self.mute_button.toggled.connect(self.mute_me)
+        #layout for volume Controls
+        inner_h_layout_volume_controls = QHBoxLayout()
+        inner_h_layout_volume_controls.addSpacing(50)
+        inner_h_layout_volume_controls.addWidget(self.volume_label)
+        inner_h_layout_volume_controls.addSpacing(10)
+        inner_h_layout_volume_controls.addWidget(self.vol_slider)
+        inner_h_layout_volume_controls.addSpacing(50)
+        inner_h_layout_volume_controls.addWidget(self.mute_label)
+        inner_h_layout_volume_controls.addSpacing(10)
+        inner_h_layout_volume_controls.addWidget(self.mute_button)
+        inner_h_layout_volume_controls.addSpacing(50)
+
+
+
+
         # layout for song info and image
         outer_h_layout_contain_inner = QHBoxLayout()
         outer_h_layout_contain_inner.addWidget(self.music_image)
         outer_h_layout_contain_inner.addLayout(inner_v_layout_song_info)
         outer_h_layout_contain_inner.addLayout(inner_v_layout_disp_image)
         # layout for Buttons
-        outer_h_layout_contain_buttons = QHBoxLayout()
+        self.outer_h_layout_contain_buttons = QHBoxLayout()
         # Buttons
         for i in button_list:
             my_button = QPushButton(i)
-            my_button.setStyleSheet("background-color: #5280c9")
+            my_button.setStyleSheet("background-color: #B6C6D1, border-style: outset")
             my_button.clicked.connect(self.on_click)
-            outer_h_layout_contain_buttons.addWidget(my_button)
+            self.outer_h_layout_contain_buttons.addWidget(my_button)
 
         #main v layout
         main_v_layout = QVBoxLayout()
         main_v_layout.addLayout(outer_h_layout_contain_inner)
         main_v_layout.addWidget(self.song_list)
         # add volume slider here
-        main_v_layout.addWidget(self.vol_slider)
-        main_v_layout.addLayout(outer_h_layout_contain_buttons)
+        main_v_layout.addLayout(inner_h_layout_volume_controls)
+        # main_v_layout.addWidget(self.vol_slider)
+        main_v_layout.addLayout(self.outer_h_layout_contain_buttons)
         # outer_v_layout.addLayout(inner_h_layout)
         self.setLayout(main_v_layout)
 
@@ -129,28 +138,39 @@ class Window(QWidget):
             pygame.mixer.music.set_endevent(pygame.USEREVENT)
             pygame.event.set_allowed(pygame.USEREVENT)
             pygame.mixer.music.play()
-            pygame.mixer.music.set_volume(0.5)
+            if(self.mute_button.isChecked()):
+                pygame.mixer.music.set_volume(0.0)
+            else:
+                pygame.mixer.music.set_volume(self.vol_slider.value()/100)
             pygame.event.wait()
 
     @pyqtSlot()
     def on_click(self):
         button = self.sender()
-        if(button.text()=="Pause"):
-            # button.setStyleSheet("background-color: #447c43")
-            pygame.mixer.music.pause()
-        elif(button.text()=="Play"):
-            pygame.mixer.music.unpause()
-        elif(button.text()=="Stop"):
-            pygame.mixer.music.stop()
+        if(pygame.init()):
+                # widget.setStyleSheet("background-color: #B6C6D1")
+            if(button.text()=="Pause"):
+                pygame.mixer.music.pause()
+            elif(button.text()=="Play"):
+                pygame.mixer.music.unpause()
+            elif(button.text()=="Stop"):
+                pygame.mixer.music.stop()
+                self.song_name.setText("Select a song to Play!!!")
+                self.artist_name.setText("")
 
-    @pyqtSlot()
+
     def vol_change(self):
-        my_text = self.vol_slider.value()
-        my_text = my_text/10
-        # pygame.mixer.music.set_volume(my_text)
-        # print(pygame.mixer.music.get_volume())
-        # self.my_volume.setVolume(my_text)
-        print(my_text)
+        if(pygame.init()):
+            my_vol = self.vol_slider.value()/100
+            if(self.mute_button.isChecked() == False):
+                pygame.mixer.music.set_volume(my_vol)
+
+    def mute_me(self):
+        if(pygame.init()):
+            if(self.mute_button.isChecked()):
+                pygame.mixer.music.set_volume(0.0)
+            else:
+                pygame.mixer.music.set_volume(self.vol_slider.value()/100)
 
 
 app = QApplication(sys.argv)
