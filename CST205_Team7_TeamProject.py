@@ -4,9 +4,10 @@ import random
 import pygame
 from PyQt5.QtWidgets import (QApplication, QWidget, QLabel, QPushButton,
                                 QSlider, QLineEdit, QHBoxLayout, QVBoxLayout,
-                                QComboBox)
-from PyQt5.QtCore import pyqtSlot
+                                QComboBox, QGroupBox)
+from PyQt5.QtCore import (pyqtSlot, Qt)
 from PyQt5.QtGui import (QPixmap, QImage, QIcon)
+from PyQt5.QtMultimedia import QMediaPlayer
 from PIL import Image
 from pygame import mixer
 
@@ -47,6 +48,21 @@ class Window(QWidget):
         # Dislay image for the song if any
         self.cover_image = QLabel()
 
+        #Volume Slider
+        self.vol_slider = QSlider()
+        self.vol_slider.setOrientation(Qt.Horizontal)
+        self.vol_slider.setRange(0,10)
+        self.vol_slider.setValue(5)
+        # self.vol_slider.setTickPosition(QSlider.TicksBelow)
+        # self.vol_slider.setTickInterval(5)
+        self.vol_slider.valueChanged.connect(self.vol_change)
+        # self.vol_slider.size(100,100)
+
+        #volume control
+        self.my_volume = QMediaPlayer()
+        # self.my_volume.setVolume(50)
+
+
 
         # Music Image
         self.music_image = QLabel()
@@ -80,6 +96,8 @@ class Window(QWidget):
         main_v_layout = QVBoxLayout()
         main_v_layout.addLayout(outer_h_layout_contain_inner)
         main_v_layout.addWidget(self.song_list)
+        # add volume slider here
+        main_v_layout.addWidget(self.vol_slider)
         main_v_layout.addLayout(outer_h_layout_contain_buttons)
         # outer_v_layout.addLayout(inner_h_layout)
         self.setLayout(main_v_layout)
@@ -111,6 +129,7 @@ class Window(QWidget):
             pygame.mixer.music.set_endevent(pygame.USEREVENT)
             pygame.event.set_allowed(pygame.USEREVENT)
             pygame.mixer.music.play()
+            pygame.mixer.music.set_volume(0.5)
             pygame.event.wait()
 
     @pyqtSlot()
@@ -124,7 +143,14 @@ class Window(QWidget):
         elif(button.text()=="Stop"):
             pygame.mixer.music.stop()
 
-
+    @pyqtSlot()
+    def vol_change(self):
+        my_text = self.vol_slider.value()
+        my_text = my_text/10
+        # pygame.mixer.music.set_volume(my_text)
+        # print(pygame.mixer.music.get_volume())
+        # self.my_volume.setVolume(my_text)
+        print(my_text)
 
 
 app = QApplication(sys.argv)
