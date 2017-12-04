@@ -94,10 +94,13 @@ class Window(QWidget):
         # layout for Buttons
         self.outer_h_layout_contain_buttons = QHBoxLayout()
         # Buttons
+        self.button_map = {}
         for i in button_list:
             my_button = QPushButton(i)
-            my_button.setStyleSheet("background-color: #B6C6D1, border-style: outset")
+            my_button.setStyleSheet("background-color: #FFFFFF")
             my_button.clicked.connect(self.on_click)
+            # self.saveButton(my_button)
+            self.button_map[my_button.text()] = my_button
             self.outer_h_layout_contain_buttons.addWidget(my_button)
 
         #main v layout
@@ -118,9 +121,6 @@ class Window(QWidget):
         # self.setGeometry(200, 200, 600, 400)
 
         self.setWindowTitle("My Player")
-
-        # self.resize(pixmap.width(),pixmap.height())
-
 
     @pyqtSlot()
     def update_ui(self):
@@ -148,7 +148,9 @@ class Window(QWidget):
     def on_click(self):
         button = self.sender()
         if(pygame.init()):
-                # widget.setStyleSheet("background-color: #B6C6D1")
+            for widget in self.button_map:
+                self.button_map[widget].setStyleSheet("background-color: #FFFFFF")
+            self.button_map[button.text()].setStyleSheet("background-color: #A6C6D1")
             if(button.text()=="Pause"):
                 pygame.mixer.music.pause()
             elif(button.text()=="Play"):
