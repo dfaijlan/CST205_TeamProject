@@ -4,9 +4,7 @@ import random
 from PIL import Image
 import pygame
 from pygame import mixer
-from PyQt5.QtWidgets import (QApplication, QWidget, QLabel, QPushButton,
-                                QSlider, QLineEdit, QHBoxLayout, QVBoxLayout,
-                                QComboBox, QGroupBox, QRadioButton)
+from PyQt5.QtWidgets import *
 from PyQt5.QtCore import (pyqtSlot, Qt)
 from PyQt5.QtGui import (QPixmap, QImage, QIcon)
 
@@ -20,11 +18,13 @@ my_new_dict = {
     },
     "Still Feelin It":{
         "artist_name" : "Mistah F.A.B.",
+        "album name" : "Son of a Pimp",
         "song_path":"songs/Still-Feelin-It_Mix.wav",
         "img_path":"images/stf_img.jpg"
     },
     "Random":{
-        "artist_name" : "Unknown",
+        "artist_name" : "George Harrison",
+        "album name" : "Concert for bangladesh",
         "song_path":"songs/Track01.mp3",
         "img_path":"images/my_img.jpg"
     }
@@ -47,18 +47,21 @@ class Window(QWidget):
         self.artist_name = QLabel()
         # Dislay image for the song if any
         self.cover_image = QLabel()
+        # Display album name
+        self.album_name = QLabel()
 
         inner_v_layout_song_info = QVBoxLayout()
         inner_v_layout_song_info.addWidget(self.song_name)
         inner_v_layout_song_info.addWidget(self.artist_name)
         # inner_v_layout_song_info.addWidget(self.song_list)
+        inner_v_layout_song_info.addWidget(self.album_name)
         inner_v_layout_disp_image = QVBoxLayout()
-        inner_v_layout_disp_image.addWidget(self.cover_image)
+        #inner_v_layout_disp_image.addWidget(self.cover_image)
 
         # Music Image
         self.music_image = QLabel()
         music_pic = QPixmap("images/music.png")
-        music_pic = music_pic.scaledToWidth(150)
+        music_pic = music_pic.scaledToWidth(600)
         self.music_image.setPixmap(music_pic)
 
         #Volume Controls
@@ -129,11 +132,12 @@ class Window(QWidget):
         self.reset_button_color()
         pygame.mixer.quit()
         if (my_text != "Pick a song"):
-            self.song_name.setText(my_text)
-            self.artist_name.setText(my_new_dict[my_text]["artist_name"])
+            self.song_name.setText("Song: " + my_text)
+            self.artist_name.setText("Artist: " + my_new_dict[my_text]["artist_name"])
+            self.album_name.setText("Album: " + my_new_dict[my_text]["album name"])
             pixmap = QPixmap(my_new_dict[my_text]["img_path"])
-            pixmap = pixmap.scaledToWidth(150)
-            self.cover_image.setPixmap(pixmap)
+            pixmap = pixmap.scaledToWidth(600)
+            self.music_image.setPixmap(pixmap)
             pygame.mixer.init()
             pygame.init()
             pygame.mixer.music.load(my_new_dict[my_text]["song_path"])
@@ -144,7 +148,7 @@ class Window(QWidget):
                 pygame.mixer.music.set_volume(0.0)
             else:
                 pygame.mixer.music.set_volume(self.vol_slider.value()/100)
-            pygame.event.wait()
+            #pygame.event.wait()
 
     @pyqtSlot()
     def on_click(self):
