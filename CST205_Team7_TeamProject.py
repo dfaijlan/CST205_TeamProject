@@ -18,7 +18,7 @@ my_new_dict = {
     },
     "Still Feelin It":{
         "artist_name" : "Mistah F.A.B.",
-        "song_path":"songs/Still-Feelin-It_Mix.wav",
+        "song_path":"songs/Still-Feelin-It_Mix.mp3",
         "img_path":"images/stf_img.jpg"
     },
     "Random":{
@@ -75,12 +75,20 @@ class Window(QWidget):
             my_button.setStyleSheet("background-color: #5280c9")
             my_button.clicked.connect(self.on_click)
             outer_h_layout_contain_buttons.addWidget(my_button)
+        # Layout for song song_progress
+        outer_h_layout_contain_progress = QHBoxLayout()
+        # Song progress tracker
+        self.song_progress = QLabel()
+        self.song_max = QLabel()
+        outer_h_layout_contain_progress.addWidget(self.song_progress)
+        outer_h_layout_contain_progress.addWidget(self.song_max)
 
         #main v layout
         main_v_layout = QVBoxLayout()
         main_v_layout.addLayout(outer_h_layout_contain_inner)
         main_v_layout.addWidget(self.song_list)
         main_v_layout.addLayout(outer_h_layout_contain_buttons)
+        main_v_layout.addLayout(outer_h_layout_contain_progress)
         # outer_v_layout.addLayout(inner_h_layout)
         self.setLayout(main_v_layout)
 
@@ -108,6 +116,7 @@ class Window(QWidget):
             pygame.mixer.init()
             pygame.init()
             pygame.mixer.music.load(my_new_dict[my_text]["song_path"])
+            self.song_max.setText("/" + a.get_length())
             pygame.mixer.music.set_endevent(pygame.USEREVENT)
             pygame.event.set_allowed(pygame.USEREVENT)
             pygame.mixer.music.play()
