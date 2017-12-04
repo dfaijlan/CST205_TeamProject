@@ -6,9 +6,7 @@ import pygame
 import datetime
 from pygame import mixer
 from PyQt5 import QtCore
-from PyQt5.QtWidgets import (QApplication, QWidget, QLabel, QPushButton,
-                                QSlider, QLineEdit, QHBoxLayout, QVBoxLayout,
-                                QComboBox, QGroupBox, QRadioButton)
+from PyQt5.QtWidgets import *
 from PyQt5.QtCore import (pyqtSlot, Qt)
 from PyQt5.QtGui import (QPixmap, QImage, QIcon)
 
@@ -23,12 +21,14 @@ my_new_dict = {
     },
     "Still Feelin It":{
         "artist_name" : "Mistah F.A.B.",
+        "album name" : "Son of a Pimp",
         "song_path":"songs/Still-Feelin-It_Mix.mp3",
         "img_path":"images/stf_img.jpg",
         "song_length" : 86
     },
     "Random":{
-        "artist_name" : "Unknown",
+        "artist_name" : "George Harrison",
+        "album name" : "Concert for bangladesh",
         "song_path":"songs/Track01.mp3",
         "img_path":"images/my_img.jpg",
         "song_length" : 40
@@ -52,18 +52,21 @@ class Window(QWidget):
         self.artist_name = QLabel()
         # Dislay image for the song if any
         self.cover_image = QLabel()
+        # Display album name
+        self.album_name = QLabel()
 
         inner_v_layout_song_info = QVBoxLayout()
         inner_v_layout_song_info.addWidget(self.song_name)
         inner_v_layout_song_info.addWidget(self.artist_name)
         # inner_v_layout_song_info.addWidget(self.song_list)
+        inner_v_layout_song_info.addWidget(self.album_name)
         inner_v_layout_disp_image = QVBoxLayout()
-        inner_v_layout_disp_image.addWidget(self.cover_image)
+        #inner_v_layout_disp_image.addWidget(self.cover_image)
 
         # Music Image
         self.music_image = QLabel()
         music_pic = QPixmap("images/music.png")
-        music_pic = music_pic.scaledToWidth(150)
+        music_pic = music_pic.scaledToWidth(600)
         self.music_image.setPixmap(music_pic)
 
         #Volume Controls
@@ -99,10 +102,13 @@ class Window(QWidget):
         # layout for Buttons
         self.outer_h_layout_contain_buttons = QHBoxLayout()
         # Buttons
+        self.button_map = {}
         for i in button_list:
             my_button = QPushButton(i)
-            my_button.setStyleSheet("background-color: #B6C6D1, border-style: outset")
+            my_button.setStyleSheet("background-color: #FFFFFF")
             my_button.clicked.connect(self.on_click)
+            # self.saveButton(my_button)
+            self.button_map[my_button.text()] = my_button
             self.outer_h_layout_contain_buttons.addWidget(my_button)
         # Layout for song song_progress
         outer_h_layout_contain_progress = QHBoxLayout()
@@ -141,13 +147,16 @@ class Window(QWidget):
     @pyqtSlot()
     def update_ui(self):
         my_text = self.song_list.currentText()
+        #Reset button colors
+        self.reset_button_color()
         pygame.mixer.quit()
         if (my_text != "Pick a song"):
-            self.song_name.setText(my_text)
-            self.artist_name.setText(my_new_dict[my_text]["artist_name"])
+            self.song_name.setText("Song: " + my_text)
+            self.artist_name.setText("Artist: " + my_new_dict[my_text]["artist_name"])
+            self.album_name.setText("Album: " + my_new_dict[my_text]["album name"])
             pixmap = QPixmap(my_new_dict[my_text]["img_path"])
-            pixmap = pixmap.scaledToWidth(150)
-            self.cover_image.setPixmap(pixmap)
+            pixmap = pixmap.scaledToWidth(600)
+            self.music_image.setPixmap(pixmap)
             pygame.mixer.init()
             pygame.init()
             pygame.mixer.music.load(my_new_dict[my_text]["song_path"])
@@ -164,19 +173,27 @@ class Window(QWidget):
     def on_click(self):
         button = self.sender()
         if(pygame.init()):
-                # widget.setStyleSheet("background-color: #B6C6D1")
+            # Revert back color to default
+            self.reset_button_color()
+            # Change color of the pressed button
+            self.button_map[button.text()].setStyleSheet("background-color: #A6C6D1")
             if(button.text()=="Pause"):
                 pygame.mixer.music.pause()
+            elif(button.text()=="Rewind"):
+                pygame.mixer.music.rewind()
             elif(button.text()=="Play"):
                 pygame.mixer.music.unpause()
             elif(button.text()=="Stop"):
                 pygame.mixer.music.stop()
                 self.song_name.setText("Select a song to Play!!!")
                 self.artist_name.setText("")
+                self.album_name.setText("")
                 index = self.song_list.findText("Pick a song")
                 self.song_list.setCurrentIndex(index)
                 self.song_max.setText("/0:00:00")
-                self.cover_image.clear()
+                music_pic = QPixmap("images/music.png")
+                music_pic = music_pic.scaledToWidth(600)
+                self.music_image.setPixmap(music_pic)
             elif(button.text()=="Next"):
                 index = int(self.song_list.currentIndex()) + 1
                 if (index < len(my_new_dict)):
@@ -202,6 +219,9 @@ class Window(QWidget):
             self.song_progress.setText(str(datetime.timedelta(seconds=current_time)))
             self.update()
 
+    def reset_button_color(self):
+        for widget in self.button_map:
+            self.button_map[widget].setStyleSheet("background-color: #FFFFFF")
 
 app = QApplication(sys.argv)
 main = Window()
