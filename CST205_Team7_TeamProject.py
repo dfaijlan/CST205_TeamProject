@@ -125,6 +125,8 @@ class Window(QWidget):
     @pyqtSlot()
     def update_ui(self):
         my_text = self.song_list.currentText()
+        #Reset button colors
+        self.reset_button_color()
         pygame.mixer.quit()
         if (my_text != "Pick a song"):
             self.song_name.setText(my_text)
@@ -149,8 +151,7 @@ class Window(QWidget):
         button = self.sender()
         if(pygame.init()):
             # Revert back color to default
-            for widget in self.button_map:
-                self.button_map[widget].setStyleSheet("background-color: #FFFFFF")
+            self.reset_button_color()
             # Change color of the pressed button
             self.button_map[button.text()].setStyleSheet("background-color: #A6C6D1")
             if(button.text()=="Pause"):
@@ -176,6 +177,9 @@ class Window(QWidget):
             else:
                 pygame.mixer.music.set_volume(self.vol_slider.value()/100)
 
+    def reset_button_color(self):
+        for widget in self.button_map:
+            self.button_map[widget].setStyleSheet("background-color: #FFFFFF")
 
 app = QApplication(sys.argv)
 main = Window()
