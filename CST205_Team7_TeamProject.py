@@ -148,8 +148,10 @@ class Window(QWidget):
     def on_click(self):
         button = self.sender()
         if(pygame.init()):
+            # Revert back color to default
             for widget in self.button_map:
                 self.button_map[widget].setStyleSheet("background-color: #FFFFFF")
+            # Change color of the pressed button
             self.button_map[button.text()].setStyleSheet("background-color: #A6C6D1")
             if(button.text()=="Pause"):
                 pygame.mixer.music.pause()
