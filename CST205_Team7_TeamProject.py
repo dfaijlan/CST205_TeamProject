@@ -1,4 +1,3 @@
-
 import sys
 import random
 from PIL import Image
@@ -10,10 +9,8 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtCore import (pyqtSlot, Qt)
 from PyQt5.QtGui import (QPixmap, QImage, QIcon)
 
-
-
 my_new_dict = {
-    "Pick a song":{
+    "Select Song":{
         "artist_name" : "",
         "song_path" : "",
         "img_path" : "",
@@ -36,32 +33,45 @@ my_new_dict = {
 }
 
 button_list =["Rewind","Play","Pause","Next","Stop"]
-
-
+artist_list = ["Select Artist", "The Beatles", "Bob Dylan", "Pink Floyd"]
+default_album_list = ["Select Album"]
+dylan_list = ["Select Album", "Blood on the Tracks", "Blonde on Blonde", "Highway 61 Revisited", "Bringing It All Back Home"]
+beatles_list = ["Select Album", "Rubber Soul", "Revolver", "Sgt Peppers Lonely Hearts Club Band"]
+floyd_list = ["Select Album", "Dark Side of the Moon", "Wish You Were Here", "The Wall"]
 class Window(QWidget):
     def __init__(self):
         super().__init__()
 
         #inner vlayout
+        
         # add QComboBox for the song list
         self.song_list = QComboBox()
         self.song_list.addItems(my_new_dict.keys())
         self.song_name = QLabel("Select a song to Play!!!")
-        # self.song_name.setText("Select a song to Play!!!")
+        
+        #add QComboBox for Artist List
+        self.artist_list = QComboBox()
+        self.artist_list.addItems(artist_list)
+        
+        #add QComboBox for Album List
+        self.album_list = QComboBox()
+        self.album_list.addItems(default_album_list)
+        
         # label to display artist name
         self.artist_name = QLabel()
+        
         # Dislay image for the song if any
         self.cover_image = QLabel()
+        
         # Display album name
         self.album_name = QLabel()
 
         inner_v_layout_song_info = QVBoxLayout()
         inner_v_layout_song_info.addWidget(self.song_name)
         inner_v_layout_song_info.addWidget(self.artist_name)
-        # inner_v_layout_song_info.addWidget(self.song_list)
+        
         inner_v_layout_song_info.addWidget(self.album_name)
         inner_v_layout_disp_image = QVBoxLayout()
-        #inner_v_layout_disp_image.addWidget(self.cover_image)
 
         # Music Image
         self.music_image = QLabel()
@@ -79,6 +89,7 @@ class Window(QWidget):
         self.mute_label = QLabel("Mute: ")
         self.mute_button = QRadioButton()
         self.mute_button.toggled.connect(self.mute_me)
+        
         #layout for volume Controls
         inner_h_layout_volume_controls = QHBoxLayout()
         inner_h_layout_volume_controls.addSpacing(50)
@@ -99,8 +110,10 @@ class Window(QWidget):
         outer_h_layout_contain_inner.addWidget(self.music_image)
         outer_h_layout_contain_inner.addLayout(inner_v_layout_song_info)
         outer_h_layout_contain_inner.addLayout(inner_v_layout_disp_image)
+        
         # layout for Buttons
         self.outer_h_layout_contain_buttons = QHBoxLayout()
+        
         # Buttons
         self.button_map = {}
         for i in button_list:
@@ -110,8 +123,10 @@ class Window(QWidget):
             # self.saveButton(my_button)
             self.button_map[my_button.text()] = my_button
             self.outer_h_layout_contain_buttons.addWidget(my_button)
+        
         # Layout for song song_progress
         outer_h_layout_contain_progress = QHBoxLayout()
+        
         # Song progress tracker
         self.song_progress = QLabel()
         self.song_max = QLabel("/0:00:00")
@@ -121,32 +136,38 @@ class Window(QWidget):
         #main v layout
         main_v_layout = QVBoxLayout()
         main_v_layout.addLayout(outer_h_layout_contain_inner)
+        main_v_layout.addWidget(self.artist_list)
+        main_v_layout.addWidget(self.album_list)
         main_v_layout.addWidget(self.song_list)
         main_v_layout.addLayout(self.outer_h_layout_contain_buttons)
+        
         # add volume slider here
         main_v_layout.addLayout(inner_h_layout_volume_controls)
+        
         # main_v_layout.addWidget(self.vol_slider)
         main_v_layout.addLayout(outer_h_layout_contain_progress)
+        
         # outer_v_layout.addLayout(inner_h_layout)
         self.setLayout(main_v_layout)
 
         self.song_list.currentIndexChanged.connect(self.update_ui)
+        self.artist_list.currentIndexChanged.connect(self.album_update_ui)
 
         # first two arguments for position on screen
         # second two arguments for dimensions of window (width, height)
-        # self.setGeometry(200, 200, 600, 400)
 
         self.setWindowTitle("My Player")
         self.progress_of_song()
         self.my_timer = QtCore.QTimer()
         self.my_timer.timeout.connect(self.progress_of_song)
         self.my_timer.start(60)
-        # self.resize(pixmap.width(),pixmap.height())
 
 
     @pyqtSlot()
     def update_ui(self):
+        
         my_text = self.song_list.currentText()
+        
         #Reset button colors
         self.reset_button_color()
         pygame.mixer.quit()
@@ -169,6 +190,22 @@ class Window(QWidget):
             else:
                 pygame.mixer.music.set_volume(self.vol_slider.value()/100)
 
+
+    @pyqtSlot()
+    def album_update_ui(self):
+        my_text = self.artist_list.currentText()
+        if (my_text == "Bob Dylan"):
+            self.album_list.clear()
+            self.album_list.addItems(dylan_list)
+        elif (my_text == "The Beatles"):
+            self.album_list.clear()
+            self.album_list.addItems(beatles_list)
+        elif (my_text == "Pink Floyd"):
+            self.album_list.clear()
+            self.album_list.addItems(floyd_list)
+        
+    
+    
     @pyqtSlot()
     def on_click(self):
         button = self.sender()
