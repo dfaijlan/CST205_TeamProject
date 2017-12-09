@@ -22,7 +22,7 @@ from PyQt5.QtGui import (QPixmap, QImage, QIcon)
 
 ##### All three of us created the dictionaries
 my_new_dict = {
-    "Select Song":{
+    "Pick a song":{
         "artist_name" : "",
         "song_path" : "",
         "img_path" : "",
@@ -73,14 +73,6 @@ class Window(QWidget):
         self.song_list = QComboBox()
         self.song_list.addItems(my_new_dict.keys())
         self.song_name = QLabel("Select a song to Play!!!")
-
-        #add QComboBox for Artist List
-        self.artist_list = QComboBox()
-        self.artist_list.addItems(artist_list)
-
-        #add QComboBox for Album List
-        self.album_list = QComboBox()
-        self.album_list.addItems(default_album_list)
 
         # label to display artist name
         self.artist_name = QLabel()
@@ -161,8 +153,6 @@ class Window(QWidget):
         #main v layout
         main_v_layout = QVBoxLayout()
         main_v_layout.addLayout(outer_h_layout_contain_inner)
-        main_v_layout.addWidget(self.artist_list)
-        main_v_layout.addWidget(self.album_list)
         main_v_layout.addWidget(self.song_list)
         main_v_layout.addLayout(self.outer_h_layout_contain_buttons)
 
@@ -176,7 +166,6 @@ class Window(QWidget):
         self.setLayout(main_v_layout)
 
         self.song_list.currentIndexChanged.connect(self.update_ui)
-        self.artist_list.currentIndexChanged.connect(self.album_update_ui)
 
         # first two arguments for position on screen
         # second two arguments for dimensions of window (width, height)
@@ -190,7 +179,9 @@ class Window(QWidget):
 
     @pyqtSlot()
     ########## This updates the GUI whenever the user changes the song
-    ##### Yashkaran and Dominic made this part
+    ##### Yashkaran made the buttons and general layout
+    ##### Gerardo was able to make the songs play and made it display alb
+    ##### Dominic set the progress of the song
     def update_ui(self):
 
         my_text = self.song_list.currentText()
@@ -217,21 +208,6 @@ class Window(QWidget):
                 pygame.mixer.music.set_volume(0.0)
             else:
                 pygame.mixer.music.set_volume(self.vol_slider.value()/100)
-
-
-    @pyqtSlot()
-    def album_update_ui(self):
-        my_text = self.artist_list.currentText()
-        if (my_text == "Bob Dylan"):
-            self.album_list.clear()
-            self.album_list.addItems(dylan_list)
-        elif (my_text == "The Beatles"):
-            self.album_list.clear()
-            self.album_list.addItems(beatles_list)
-        elif (my_text == "Pink Floyd"):
-            self.album_list.clear()
-            self.album_list.addItems(floyd_list)
-
 
 
     @pyqtSlot()
@@ -270,9 +246,9 @@ class Window(QWidget):
             elif(button.text()=="Stop"):
                 pygame.mixer.music.stop()
                 self.song_name.setText("Select a song to Play!!!")
+                index = self.song_list.findText("Pick a song")
                 self.artist_name.setText("")
                 self.album_name.setText("")
-                index = self.song_list.findText("Pick a song")
                 self.song_list.setCurrentIndex(index)
                 self.song_max.setText("/0:00:00")
                 music_pic = QPixmap("images/music.png")

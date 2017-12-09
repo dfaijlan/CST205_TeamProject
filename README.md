@@ -1,4 +1,4 @@
-# Mpy3 Player
+# MPy3 Player
 
 * Team Members: Gerardo Alcaraz, Dominic Fajilan, Yashkaran Singh
 * Class: CST205 - Multimedia Design & Programming
@@ -31,8 +31,8 @@ Mute radio button: Mutes the song
 
 https://github.com/dfaijlan/CST205_TeamProject
 
-## Future worke
+## Future work
 
 * Add more songs
-* add an equalizer
-* make the GUI cleaner and nicer to look at
+* Add an equalizer
+* Make the GUI cleaner and nicer to look at
