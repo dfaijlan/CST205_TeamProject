@@ -146,7 +146,7 @@ class Window(QWidget):
 
         # Song progress tracker
         self.song_progress = QLabel()
-        self.song_max = QLabel("/0:00:00")
+        self.song_max = QLabel("/ 0:00:00")
         
         outer_h_layout_contain_progress.addWidget(self.song_progress)
         outer_h_layout_contain_progress.addWidget(self.song_max)
