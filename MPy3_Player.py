@@ -18,7 +18,7 @@ from pygame import mixer
 from PyQt5 import QtCore
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import (pyqtSlot, Qt)
-from PyQt5.QtGui import (QPixmap, QImage, QIcon)
+from PyQt5.QtGui import *
 
 ##### All three of us created the dictionaries
 my_new_dict = {
@@ -61,7 +61,11 @@ class Window(QWidget):
         super().__init__()
 
         #inner vlayout
-
+        
+        #self.myFont = QtGui
+        
+        #self.myFont = QtGui.QFont()
+        
         # add QComboBox for the song list
         self.song_list = QComboBox()
         self.song_list.addItems(my_new_dict.keys())
@@ -184,9 +188,9 @@ class Window(QWidget):
         pygame.mixer.quit()
         if (my_text != "Pick a song"):
             # starts the song, displays all information of song, collaborated on by all three members
-            self.song_name.setText("Song: " + my_text)
-            self.artist_name.setText("Artist: " + my_new_dict[my_text]["artist_name"])
-            self.album_name.setText("Album: " + my_new_dict[my_text]["album name"])
+            self.song_name.setText("<h4>Song:</h4> <br>" + f"<h3>{my_text}</h3>")
+            self.artist_name.setText("<h4>Artist:</h4> <br>" + f'<h3>{my_new_dict[my_text]["artist_name"]}</h3>')
+            self.album_name.setText("<h4>Album:</h4> <br>" + f'<h3>{my_new_dict[my_text]["album name"]}</h3>')
             pixmap = QPixmap(my_new_dict[my_text]["img_path"])
             pixmap = pixmap.scaledToWidth(600)
             self.music_image.setPixmap(pixmap)
