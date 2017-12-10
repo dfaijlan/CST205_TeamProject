@@ -35,13 +35,6 @@ my_new_dict = {
         "img_path":"images/stf_img.jpg",
         "song_length" : 86
     },
-    "Random":{
-        "artist_name" : "George Harrison",
-        "album name" : "Concert for bangladesh",
-        "song_path":"songs/Track01.mp3",
-        "img_path":"images/my_img.jpg",
-        "song_length" : 40
-    },
     "2" : {
         "artist_name" : "H.E.R.",
         "album name" : "H.E.R.",
