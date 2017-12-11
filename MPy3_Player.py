@@ -35,12 +35,12 @@ my_new_dict = {
         "img_path":"images/stf_img.jpg",
         "song_length" : 86
     },
-    "Random":{
-        "artist_name" : "George Harrison",
-        "album name" : "Concert for bangladesh",
-        "song_path":"songs/Track01.mp3",
-        "img_path":"images/my_img.jpg",
-        "song_length" : 40
+    "Hey Jude":{
+        "artist_name" : "The Beatles",
+        "album name" : "Hey Jude",
+        "song_path":"songs/HeyJude.mp3",
+        "img_path":"images/beatles_img.jpg",
+        "song_length" : 489
     },
     "2" : {
         "artist_name" : "H.E.R.",
@@ -55,6 +55,13 @@ my_new_dict = {
         "song_path" : "songs/Frozen.mp3",
         "img_path":"images/frozen_img.jpg",
         "song_length" : 245
+    },
+    "Psychotic Girl" : {
+        "artist_name" : "The Black Keys",
+        "album name" : "Attack & Release",
+        "song_path" : "songs/PsychoticGirl.mp3",
+        "img_path" : "images/keys_img.jpg",
+        "song_length" : 251
     }
 }
 
@@ -208,6 +215,16 @@ class Window(QWidget):
                 pygame.mixer.music.set_volume(0.0)
             else:
                 pygame.mixer.music.set_volume(self.vol_slider.value()/100)
+        else:
+            self.song_name.setText("Select a song to Play!!!")
+            index = self.song_list.findText("Pick a song")
+            self.artist_name.setText("")
+            self.album_name.setText("")
+            self.song_list.setCurrentIndex(index)
+            self.song_max.setText("/0:00:00")
+            music_pic = QPixmap("images/music.png")
+            music_pic = music_pic.scaledToWidth(600)
+            self.music_image.setPixmap(music_pic)
 
 
     @pyqtSlot()
