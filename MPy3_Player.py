@@ -18,7 +18,7 @@ from pygame import mixer
 from PyQt5 import QtCore
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import (pyqtSlot, Qt)
-from PyQt5.QtGui import (QPixmap, QImage, QIcon)
+from PyQt5.QtGui import *
 
 ##### All three of us created the dictionaries
 my_new_dict = {
@@ -40,7 +40,7 @@ my_new_dict = {
         "album name" : "Hey Jude",
         "song_path":"songs/HeyJude.mp3",
         "img_path":"images/beatles_img.jpg",
-        "song_length" : 489
+        "song_length" : 377
     },
     "2" : {
         "artist_name" : "H.E.R.",
@@ -76,10 +76,14 @@ class Window(QWidget):
 
         #inner vlayout
 
+        #self.myFont = QtGui
+
+        #self.myFont = QtGui.QFont()
+
         # add QComboBox for the song list
         self.song_list = QComboBox()
         self.song_list.addItems(my_new_dict.keys())
-        self.song_name = QLabel("Select a song to Play!!!")
+        self.song_name = QLabel("Select a Song to Play!!!")
 
         # label to display artist name
         self.artist_name = QLabel()
@@ -104,13 +108,13 @@ class Window(QWidget):
         self.music_image.setPixmap(music_pic)
 
         #Volume Controls
-        self.volume_label = QLabel("Volume: ")
+        self.volume_label = QLabel("<h5>Volume: </h5>")
         self.vol_slider = QSlider()
         self.vol_slider.setOrientation(Qt.Horizontal)
         self.vol_slider.setRange(0,100)
         self.vol_slider.setValue(5)
         self.vol_slider.valueChanged.connect(self.vol_change)
-        self.mute_label = QLabel("Mute: ")
+        self.mute_label = QLabel("<h5>Mute: </h5>")
         self.mute_button = QRadioButton()
         self.mute_button.toggled.connect(self.mute_me)
 
@@ -151,11 +155,18 @@ class Window(QWidget):
         # Layout for song song_progress
         outer_h_layout_contain_progress = QHBoxLayout()
 
+        #Add Stretch to move the progress bar/text to the far right
+        outer_h_layout_contain_progress.addStretch(1)
+
         # Song progress tracker
         self.song_progress = QLabel()
-        self.song_max = QLabel("/0:00:00")
+        self.song_max = QLabel("/ 0:00:00")
+
         outer_h_layout_contain_progress.addWidget(self.song_progress)
         outer_h_layout_contain_progress.addWidget(self.song_max)
+
+        #Add Stretch on the right to move the progress bar/text to the center by stretching it from the right side. Aligning it.
+        outer_h_layout_contain_progress.addStretch(1)
 
         #main v layout
         main_v_layout = QVBoxLayout()
@@ -198,9 +209,9 @@ class Window(QWidget):
         pygame.mixer.quit()
         if (my_text != "Pick a song"):
             # starts the song, displays all information of song, collaborated on by all three members
-            self.song_name.setText("Song: " + my_text)
-            self.artist_name.setText("Artist: " + my_new_dict[my_text]["artist_name"])
-            self.album_name.setText("Album: " + my_new_dict[my_text]["album name"])
+            self.song_name.setText("<h5>Song:</h5> <br>" + f"<h4>{my_text}</h4>")
+            self.artist_name.setText("<h5>Artist:</h5> <br>" + f'<h4>{my_new_dict[my_text]["artist_name"]}</h4>')
+            self.album_name.setText("<h5>Album:</h5> <br>" + f'<h4>{my_new_dict[my_text]["album name"]}</h4>')
             pixmap = QPixmap(my_new_dict[my_text]["img_path"])
             pixmap = pixmap.scaledToWidth(600)
             self.music_image.setPixmap(pixmap)
