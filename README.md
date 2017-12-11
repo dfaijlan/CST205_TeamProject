@@ -35,4 +35,5 @@ https://github.com/dfaijlan/CST205_TeamProject
 
 * Add more songs
 * Add an equalizer
-* Make the GUI cleaner and nicer to look at
+* Make the GUI cleaner
+* Add the option to choose a song based on artist and album
